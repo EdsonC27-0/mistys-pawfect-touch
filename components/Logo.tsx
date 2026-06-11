@@ -1,17 +1,21 @@
 export function LabradorMark({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
-      {/* Minimal Labrador head outline */}
+      {/* Labrador head — side profile facing right, matching logo */}
+      {/* Main head + muzzle contour */}
       <path
-        d="M14 38c-2-7 0-15 5-20 3-3 6-4 9-4h8c3 0 6 1 9 4 5 5 7 13 5 20l-2 8c-1 4-4 7-8 8l-4 1h-8l-4-1c-4-1-7-4-8-8l-2-8Z"
+        d="M17 52 C14 46 12 38 13 29 C14 19 19 11 27 9 C33 7 40 9 46 15 C52 20 55 27 53 34 C51 39 46 42 39 43 C33 44 27 46 23 50 C21 53 19 57 17 59"
         stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
       />
-      <path d="M19 16c-4 1-7 5-7 10 0 3 1 5 2 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M45 16c4 1 7 5 7 10 0 3-1 5-2 7" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-      <circle cx="25" cy="33" r="1.8" fill="currentColor" />
-      <circle cx="39" cy="33" r="1.8" fill="currentColor" />
-      <path d="M32 40v3m0 0c-2 3-5 3-6 1m6-1c2 3 5 3 6 1" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M29 40h6c1 0 1.5-1 1-2l-2.4-2.6a2 2 0 0 0-3.2 0L28 38c-.5 1 0 2 1 2Z" fill="currentColor" />
+      {/* Floppy ear */}
+      <path
+        d="M17 14 C11 16 7 24 9 34 C10 39 14 41 17 40 C20 39 20 32 18 24 C17 19 17 16 17 14Z"
+        stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
+      />
+      {/* Eye */}
+      <circle cx="38" cy="19" r="2.2" fill="currentColor" />
+      {/* Nose */}
+      <ellipse cx="53" cy="29" rx="1.8" ry="1.4" fill="currentColor" />
     </svg>
   );
 }
