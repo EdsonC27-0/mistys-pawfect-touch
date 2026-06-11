@@ -54,12 +54,13 @@ export default async function HomePage() {
             <p className="mt-6 text-sm text-inkgrey/80">{settings.opening_hours_text}</p>
           </div>
           <div className="relative">
-            <div className="card relative aspect-square overflow-hidden p-0">
+            <div className="card relative aspect-square overflow-hidden p-0 bg-plum">
               <Image
                 src="/logo-hero.jpeg"
                 alt="Misty's Pawfect Touch — Inspired by love. Delivered with care."
                 fill
-                className="object-cover hue-rotate-[260deg] saturate-[1.05]"
+                className="object-cover mix-blend-multiply"
+                style={{ filter: "grayscale(1) brightness(1.8) contrast(15)" }}
                 priority
               />
             </div>
