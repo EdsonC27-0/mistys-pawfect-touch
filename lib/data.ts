@@ -140,8 +140,8 @@ export const STATIC_FAQS: any[] = [
 
 export async function getPublicSettings(): Promise<Record<string, any>> {
   const defaults: Record<string, any> = {
-    whatsapp_number: "27000000000",
-    phone_display: "+27 00 000 0000",
+    whatsapp_number: "27825315141",
+    phone_display: "+27 82 531 5141",
     email_address: "hello@mistyspawfecttouch.co.za",
     address: "Durbanville, Cape Town, Western Cape",
     opening_hours_text: "Mon–Fri 08:30–17:00 · Sat 08:30–13:00",

@@ -49,7 +49,7 @@ export default function AboutPage() {
               their quirks, their favourite scratch spots. We groom them the way we&rsquo;d want our own
               dogs groomed — gently, beautifully, and with a little extra love.
             </p>
-            <p className="mt-6 font-display text-lg text-plum">— The Misty&rsquo;s family <span className="text-sm font-body text-inkgrey/60">(replace with your name &amp; signature)</span></p>
+            <p className="mt-6 font-display text-lg text-plum">— Thercia</p>
           </div>
         </div>
       </Section>
