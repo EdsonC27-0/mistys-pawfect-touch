@@ -89,7 +89,7 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
 
   if (done) {
     return (
-      <div className="card mx-auto max-w-xl p-10 text-center">
+      <div className="card mx-auto max-w-xl p-6 sm:p-10 text-center">
         <PawIcon className="mx-auto h-10 w-10 text-gold" />
         <h2 className="mt-4 text-3xl">Booking request received!</h2>
         <p className="mt-3 leading-relaxed">
@@ -125,13 +125,26 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${i <= step ? "bg-plum text-white" : "bg-lilac-100 text-plum-mid"}`}>
               {i + 1}
             </span>
-            <span className={`hidden text-xs font-semibold sm:block ${i <= step ? "text-plum" : "text-inkgrey/50"}`}>{label}</span>
+            <span className={`text-xs font-semibold ${i === step ? "block" : "hidden sm:block"} ${i <= step ? "text-plum" : "text-inkgrey/50"}`}>{label}</span>
             {i < steps.length - 1 && <span className="h-px flex-1 bg-lilac-200" />}
           </li>
         ))}
       </ol>
 
-      {step === 0 && (
+      {step === 0 && !services.length && (
+        <div className="card p-8 text-center">
+          <PawIcon className="mx-auto h-8 w-8 text-gold" />
+          <p className="mt-4 font-display text-lg text-plum">Services coming soon</p>
+          <p className="mt-2 text-sm leading-relaxed">
+            Our online booking is being set up. In the meantime, WhatsApp us and we&rsquo;ll get you sorted.
+          </p>
+          <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp mt-5">
+            Chat on WhatsApp
+          </a>
+        </div>
+      )}
+
+      {step === 0 && !!services.length && (
         <div className="grid gap-4 sm:grid-cols-2">
           {services.map((s) => (
             <button
@@ -148,7 +161,7 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
       )}
 
       {step === 1 && (
-        <div className="card space-y-6 p-8">
+        <div className="card space-y-6 p-5 sm:p-8">
           <div>
             <span className="label">Dog&rsquo;s size</span>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -181,7 +194,7 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
       )}
 
       {step === 2 && (
-        <div className="card space-y-6 p-8">
+        <div className="card space-y-6 p-5 sm:p-8">
           <div className="max-w-xs">
             <label className="label" htmlFor="date">Preferred date</label>
             <input id="date" type="date" className="input" min={minDate} max={maxDate} value={date} onChange={(e) => setDate(e.target.value)} />
@@ -211,7 +224,7 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
       )}
 
       {step === 3 && (
-        <div className="card space-y-5 p-8">
+        <div className="card space-y-5 p-5 sm:p-8">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="label" htmlFor="oname">Your name *</label>

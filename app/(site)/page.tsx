@@ -3,7 +3,7 @@ import Image from "next/image";
 import Section from "@/components/Section";
 import Placeholder from "@/components/Placeholder";
 import { PawIcon } from "@/components/Logo";
-import { getPublicSettings, getServices } from "@/lib/data";
+import { getPublicSettings, getServices, getReviews } from "@/lib/data";
 import { supabaseServer } from "@/lib/supabase/server";
 import { zar } from "@/lib/format";
 
@@ -18,9 +18,8 @@ const benefits = [
 ];
 
 export default async function HomePage() {
-  const [settings, services] = await Promise.all([getPublicSettings(), getServices()]);
+  const [settings, services, reviews] = await Promise.all([getPublicSettings(), getServices(), getReviews(3)]);
   const sb = supabaseServer();
-  const { data: reviews } = await sb.from("reviews").select("*").eq("is_approved", true).order("sort_order").limit(3);
   const { data: tiles } = await sb.from("instagram_tiles").select("*").eq("active", true).order("sort_order").limit(6);
   const featured = services.filter((s: any) => !s.is_addon).slice(0, 6);
 
@@ -125,7 +124,7 @@ export default async function HomePage() {
       {/* Reviews */}
       <Section tint eyebrow="Wagging endorsements" title="What our humans say">
         <div className="grid gap-6 lg:grid-cols-3">
-          {(reviews ?? []).map((r) => (
+          {reviews.map((r) => (
             <figure key={r.id} className="card p-7">
               <div className="text-gold" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(r.rating)}</div>
               <blockquote className="mt-3 text-sm leading-relaxed">&ldquo;{r.content}&rdquo;</blockquote>
