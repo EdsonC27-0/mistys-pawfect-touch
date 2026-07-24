@@ -4,8 +4,7 @@ import Section from "@/components/Section";
 import Placeholder from "@/components/Placeholder";
 import BotanicalOrnament from "@/components/BotanicalOrnament";
 import { PawIcon } from "@/components/Logo";
-import { getPublicSettings, getServices, getReviews } from "@/lib/data";
-import { supabaseServer } from "@/lib/supabase/server";
+import { getInstagramTiles, getPublicSettings, getServices, getReviews } from "@/lib/data";
 import { zar } from "@/lib/format";
 
 export const revalidate = 60;
@@ -19,9 +18,12 @@ const benefits = [
 ];
 
 export default async function HomePage() {
-  const [settings, services, reviews] = await Promise.all([getPublicSettings(), getServices(), getReviews(3)]);
-  const sb = supabaseServer();
-  const { data: tiles } = await sb.from("instagram_tiles").select("*").eq("active", true).order("sort_order").limit(6);
+  const [settings, services, reviews, tiles] = await Promise.all([
+    getPublicSettings(),
+    getServices(),
+    getReviews(3),
+    getInstagramTiles(6),
+  ]);
   const featured = services.filter((s: any) => !s.is_addon).slice(0, 6);
 
   return (

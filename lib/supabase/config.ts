@@ -1,4 +1,8 @@
 // The anon/publishable key is safe to expose in the browser; access is governed by RLS.
+export const SUPABASE_CONFIGURED = Boolean(
+  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
+
 export const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://bbwzzmsektsykzgkxjaf.supabase.co";
 export const SUPABASE_ANON_KEY =

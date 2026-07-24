@@ -1,4 +1,16 @@
 import { supabaseServer } from "./supabase/server";
+import { SUPABASE_CONFIGURED } from "./supabase/config";
+
+const PUBLIC_DATA_TIMEOUT_MS = 2000;
+
+async function withPublicDataTimeout<T>(query: PromiseLike<T>): Promise<T | null> {
+  return Promise.race([
+    Promise.resolve(query),
+    new Promise<null>((resolve) => {
+      setTimeout(() => resolve(null), PUBLIC_DATA_TIMEOUT_MS);
+    }),
+  ]);
+}
 
 // ── Static fallback content ──────────────────────────────────────────────────
 // Rendered when Supabase is paused / has no data yet.
@@ -148,43 +160,72 @@ export async function getPublicSettings(): Promise<Record<string, any>> {
     instagram_username: "mistyspawfecttouch",
     pensioner_discount_percent: 10,
   };
+  if (!SUPABASE_CONFIGURED) return defaults;
   try {
     const sb = supabaseServer();
-    const { data } = await sb.from("settings").select("key,value").eq("is_public", true);
+    const result = await withPublicDataTimeout(
+      sb.from("settings").select("key,value").eq("is_public", true)
+    );
+    const data = result?.data;
     (data ?? []).forEach((r) => (defaults[r.key] = r.value));
   } catch {}
   return defaults;
 }
 
 export async function getServices() {
+  if (!SUPABASE_CONFIGURED) return STATIC_SERVICES;
   try {
     const sb = supabaseServer();
-    const { data } = await sb
-      .from("services")
-      .select("*, service_prices(*)")
-      .eq("active", true)
-      .order("sort_order");
+    const result = await withPublicDataTimeout(
+      sb
+        .from("services")
+        .select("*, service_prices(*)")
+        .eq("active", true)
+        .order("sort_order")
+    );
+    const data = result?.data;
     if (data && data.length > 0) return data;
   } catch {}
   return STATIC_SERVICES;
 }
 
 export async function getReviews(limit?: number) {
+  if (!SUPABASE_CONFIGURED) {
+    return limit ? STATIC_REVIEWS.slice(0, limit) : STATIC_REVIEWS;
+  }
   try {
     const sb = supabaseServer();
     let q = sb.from("reviews").select("*").eq("is_approved", true).order("sort_order");
     if (limit) q = q.limit(limit);
-    const { data } = await q;
+    const result = await withPublicDataTimeout(q);
+    const data = result?.data;
     if (data && data.length > 0) return data;
   } catch {}
   return limit ? STATIC_REVIEWS.slice(0, limit) : STATIC_REVIEWS;
 }
 
 export async function getFaqs() {
+  if (!SUPABASE_CONFIGURED) return STATIC_FAQS;
   try {
     const sb = supabaseServer();
-    const { data } = await sb.from("faqs").select("*").eq("active", true).order("sort_order");
+    const result = await withPublicDataTimeout(
+      sb.from("faqs").select("*").eq("active", true).order("sort_order")
+    );
+    const data = result?.data;
     if (data && data.length > 0) return data;
   } catch {}
   return STATIC_FAQS;
+}
+
+export async function getInstagramTiles(limit = 6) {
+  if (!SUPABASE_CONFIGURED) return [];
+  try {
+    const sb = supabaseServer();
+    const result = await withPublicDataTimeout(
+      sb.from("instagram_tiles").select("*").eq("active", true).order("sort_order").limit(limit)
+    );
+    return result?.data ?? [];
+  } catch {
+    return [];
+  }
 }
