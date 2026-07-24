@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Logo, { PawIcon } from "./Logo";
+import BotanicalOrnament from "./BotanicalOrnament";
 
 export default function Footer({ settings }: { settings: Record<string, any> }) {
   return (
-    <footer className="mt-24 border-t border-lilac-100 bg-lilac-50">
-      <div className="container-px grid gap-10 py-14 md:grid-cols-3">
+    <footer className="storefront-footer mt-24 border-t border-lilac-100 bg-lilac-50">
+      <BotanicalOrnament className="botanical-ornament botanical-footer-art" variant="corner" />
+      <div className="container-px relative z-10 grid gap-10 py-14 md:grid-cols-3">
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">
@@ -30,7 +32,7 @@ export default function Footer({ settings }: { settings: Record<string, any> }) 
           </ul>
         </div>
       </div>
-      <div className="border-t border-lilac-100 py-5 text-center text-xs text-inkgrey/70">
+      <div className="relative z-10 border-t border-lilac-100 py-5 text-center text-xs text-inkgrey/70">
         <span className="inline-flex items-center gap-1.5">
           © {new Date().getFullYear()} Misty&rsquo;s Pawfect Touch <PawIcon className="h-3 w-3 text-gold" /> Durbanville, Western Cape
         </span>

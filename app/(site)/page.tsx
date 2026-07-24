@@ -2,9 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import Section from "@/components/Section";
 import Placeholder from "@/components/Placeholder";
+import BotanicalOrnament from "@/components/BotanicalOrnament";
 import { PawIcon } from "@/components/Logo";
-import { getPublicSettings, getServices, getReviews } from "@/lib/data";
-import { supabaseServer } from "@/lib/supabase/server";
+import { getInstagramTiles, getPublicSettings, getServices, getReviews } from "@/lib/data";
 import { zar } from "@/lib/format";
 
 export const revalidate = 60;
@@ -18,18 +18,21 @@ const benefits = [
 ];
 
 export default async function HomePage() {
-  const [settings, services, reviews] = await Promise.all([getPublicSettings(), getServices(), getReviews(3)]);
-  const sb = supabaseServer();
-  const { data: tiles } = await sb.from("instagram_tiles").select("*").eq("active", true).order("sort_order").limit(6);
+  const [settings, services, reviews, tiles] = await Promise.all([
+    getPublicSettings(),
+    getServices(),
+    getReviews(3),
+    getInstagramTiles(6),
+  ]);
   const featured = services.filter((s: any) => !s.is_addon).slice(0, 6);
 
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-96 w-96 rounded-full bg-plum/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-lavender/25 blur-3xl" />
-        <div className="container-px grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
+      <section className="storefront-hero relative overflow-hidden">
+        <BotanicalOrnament className="botanical-ornament botanical-hero-left" />
+        <BotanicalOrnament className="botanical-ornament botanical-hero-right" variant="corner" />
+        <div className="container-px relative z-10 grid min-w-0 items-center gap-12 py-16 sm:py-24 lg:grid-cols-2">
           <div>
             <p className="eyebrow flex items-center gap-2">
               <PawIcon className="h-3.5 w-3.5 text-gold" /> Boutique dog parlour · Durbanville

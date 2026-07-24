@@ -8,11 +8,11 @@ export const revalidate = 60;
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const settings = await getPublicSettings();
   return (
-    <>
+    <div className="site-theme">
       <Nav />
       <main>{children}</main>
       <Footer settings={settings} />
       <WhatsAppFloat number={String(settings.whatsapp_number)} />
-    </>
+    </div>
   );
 }

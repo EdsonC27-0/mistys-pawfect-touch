@@ -33,3 +33,189 @@ h1, h2, h3, h4 { @apply font-display text-plum; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Storefront-only brand system. Admin routes remain on the original Tailwind palette. */
+.site-theme {
+  min-height: 100dvh;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 8% 4%, rgba(190, 145, 164, 0.22), transparent 27rem),
+    radial-gradient(circle at 92% 20%, rgba(201, 154, 107, 0.12), transparent 30rem),
+    linear-gradient(180deg, #f4ede8 0%, #fbf6f1 34%, #eee2df 100%);
+  color: #30282b;
+}
+
+.site-theme h1,
+.site-theme h2,
+.site-theme h3,
+.site-theme h4,
+.site-theme .text-plum {
+  color: #292326;
+}
+
+.site-theme :is(h1, h2) {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.site-theme .text-plum-mid {
+  color: #8a6174;
+}
+
+.site-theme .text-gold {
+  color: #c99a6b;
+}
+
+.site-theme .text-inkgrey {
+  color: #30282b;
+}
+
+.site-theme .border-lilac-100 {
+  border-color: rgba(98, 75, 85, 0.15);
+}
+
+.site-theme .border-lilac-200 {
+  border-color: rgba(98, 75, 85, 0.22);
+}
+
+.site-theme .bg-cream {
+  background-color: #f4ede8;
+}
+
+.site-theme .bg-lilac-50 {
+  background-color: rgba(225, 207, 211, 0.52);
+}
+
+.site-theme .bg-plum {
+  background-color: #292326;
+}
+
+.site-theme .card {
+  border-color: rgba(116, 80, 94, 0.14);
+  background-color: rgba(251, 246, 241, 0.86);
+  box-shadow: 0 24px 70px -24px rgba(57, 39, 47, 0.24);
+}
+
+.site-theme .eyebrow {
+  color: #8a6174;
+}
+
+.site-theme .btn-primary {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #292326;
+  box-shadow: 0 16px 36px rgba(41, 35, 38, 0.2);
+}
+
+.site-theme .btn-primary:hover {
+  background: #41353a;
+  box-shadow: 0 20px 42px rgba(41, 35, 38, 0.26);
+}
+
+.site-theme .btn-ghost {
+  border-color: rgba(138, 97, 116, 0.28);
+  background: rgba(251, 246, 241, 0.74);
+  color: #292326;
+}
+
+.site-theme :is(.btn-primary, .btn-whatsapp, .btn-ghost):active {
+  transform: translateY(0) scale(0.98);
+}
+
+.site-theme :is(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid #c99a6b;
+  outline-offset: 3px;
+}
+
+.site-theme .input {
+  border-color: rgba(98, 75, 85, 0.2);
+  background: rgba(255, 252, 249, 0.92);
+  color: #30282b;
+}
+
+.site-theme .input:focus {
+  border-color: rgba(138, 97, 116, 0.68);
+  --tw-ring-color: rgba(201, 175, 201, 0.35);
+}
+
+.storefront-hero {
+  background:
+    radial-gradient(circle at 73% 45%, rgba(212, 166, 177, 0.18), transparent 22rem),
+    linear-gradient(110deg, rgba(251, 246, 241, 0.96) 0%, rgba(244, 237, 232, 0.84) 55%, rgba(228, 210, 213, 0.6) 100%);
+}
+
+.botanical-ornament {
+  position: absolute;
+  pointer-events: none;
+  color: #a06d84;
+  opacity: 0.56;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.botanical-hero-left {
+  left: -5rem;
+  bottom: -2rem;
+  width: min(34rem, 47vw);
+  transform: rotate(-5deg);
+}
+
+.botanical-hero-right {
+  right: -3rem;
+  top: 2rem;
+  width: min(25rem, 35vw);
+  transform: rotate(8deg) scaleX(-1);
+  opacity: 0.32;
+}
+
+.storefront-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.botanical-section-art {
+  right: -8rem;
+  bottom: -8rem;
+  width: 34rem;
+  opacity: 0.14;
+}
+
+.storefront-footer {
+  position: relative;
+  overflow: hidden;
+  background: #272225 !important;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.storefront-footer :is(h1, h2, h3, h4, .text-plum, .text-inkgrey) {
+  color: #f8efeb;
+}
+
+.storefront-footer .border-lilac-100 {
+  border-color: rgba(212, 166, 177, 0.2);
+}
+
+.botanical-footer-art {
+  right: -5rem;
+  bottom: -11rem;
+  width: 29rem;
+  color: #d4a6b1;
+  opacity: 0.22;
+}
+
+@media (max-width: 767px) {
+  .botanical-hero-left {
+    left: -8rem;
+    bottom: 11rem;
+    width: 24rem;
+    opacity: 0.2;
+  }
+
+  .botanical-hero-right {
+    right: -8rem;
+    top: 5rem;
+    width: 20rem;
+    opacity: 0.18;
+  }
+}
