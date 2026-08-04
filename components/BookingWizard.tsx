@@ -7,6 +7,16 @@ import { PawIcon } from "@/components/Logo";
 type Service = { id: string; slug: string; name: string; short_description: string; duration_minutes: number; service_prices: { size: string | null; price: number }[] };
 type Slot = { slot_start: string; slot_end: string };
 
+const RPC_TIMEOUT_MS = 10000;
+
+/** Race a Supabase RPC call against a timeout, aborting the underlying request either way. */
+function withTimeout<T>(builder: PromiseLike<T> & { abortSignal?: (signal: AbortSignal) => PromiseLike<T> }, ms = RPC_TIMEOUT_MS): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  const promise = (builder.abortSignal ? builder.abortSignal(controller.signal) : builder) as Promise<T>;
+  return promise.finally(() => clearTimeout(timer));
+}
+
 const PAYMENT_METHODS = [
   { value: "payment_link", label: "Payment link", hint: "We send a secure link once confirmed" },
   { value: "eft", label: "Manual EFT", hint: "Bank details on confirmation" },
@@ -24,12 +34,17 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
   const [breed, setBreed] = useState("");
   const [date, setDate] = useState("");
   const [slots, setSlots] = useState<Slot[] | null>(null);
+  const [slotsError, setSlotsError] = useState(false);
   const [slot, setSlot] = useState<string>("");
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [owner, setOwner] = useState({ name: "", email: "", phone: "", pensioner: false, notes: "", payment: "payment_link" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState<any>(null);
+  // Stable per-attempt idempotency key: reused across retries within this page
+  // load so a lost response + resubmit can't create a duplicate booking, but
+  // fresh on every new mount (a real new booking attempt).
+  const [requestId] = useState<string>(() => crypto.randomUUID());
 
   const service = services.find((s) => s.id === serviceId);
   const price = useMemo(() => {
@@ -43,48 +58,73 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
   const maxDate = new Date(Date.now() + 60 * 86400000).toISOString().slice(0, 10);
 
   useEffect(() => {
-    if (!date || !serviceId) { setSlots(null); return; }
+    if (!date || !serviceId) { setSlots(null); setSlotsError(false); return; }
     let live = true;
     setLoadingSlots(true);
+    setSlotsError(false);
     setSlot("");
-    sb.rpc("get_available_slots", { p_date: date, p_service_id: serviceId }).then(({ data, error }) => {
-      if (!live) return;
-      setLoadingSlots(false);
-      setSlots(error ? [] : (data as Slot[]));
-    });
+    (async () => {
+      try {
+        const { data, error } = await withTimeout(sb.rpc("get_available_slots", { p_date: date, p_service_id: serviceId }));
+        if (!live) return;
+        if (error) { setSlotsError(true); setSlots([]); return; }
+        setSlots(data as Slot[]);
+      } catch {
+        if (!live) return;
+        setSlotsError(true);
+        setSlots([]);
+      } finally {
+        if (live) setLoadingSlots(false);
+      }
+    })();
     return () => { live = false; };
   }, [date, serviceId, sb]);
 
   async function submit() {
     setError("");
     setSubmitting(true);
-    const { data, error } = await sb.rpc("create_booking", {
-      p_service_id: serviceId,
-      p_date: date,
-      p_start_time: slot,
-      p_owner_name: owner.name,
-      p_email: owner.email,
-      p_phone: owner.phone,
-      p_is_pensioner: owner.pensioner,
-      p_dog_name: dogName,
-      p_breed: breed,
-      p_size: size,
-      p_notes: owner.notes,
-      p_payment_method: owner.payment,
-    });
-    setSubmitting(false);
-    if (error) {
-      setError(error.message.replace(/^.*?: /, ""));
-      if (error.message.includes("slot")) {
-        // refresh slots if it was taken
-        const { data: fresh } = await sb.rpc("get_available_slots", { p_date: date, p_service_id: serviceId });
-        setSlots((fresh as Slot[]) ?? []);
-        setSlot("");
-        setStep(2);
+    try {
+      const { data, error } = await withTimeout(sb.rpc("create_booking", {
+        p_service_id: serviceId,
+        p_date: date,
+        p_start_time: slot,
+        p_owner_name: owner.name,
+        p_email: owner.email,
+        p_phone: owner.phone,
+        p_is_pensioner: owner.pensioner,
+        p_dog_name: dogName,
+        p_breed: breed,
+        p_size: size,
+        p_notes: owner.notes,
+        p_payment_method: owner.payment,
+        p_client_request_id: requestId,
+      }));
+      if (error) {
+        setError(error.message.replace(/^.*?: /, ""));
+        if (error.message.includes("slot")) {
+          // refresh slots if it was taken
+          try {
+            const { data: fresh } = await withTimeout(sb.rpc("get_available_slots", { p_date: date, p_service_id: serviceId }));
+            setSlots((fresh as Slot[]) ?? []);
+          } catch {
+            setSlotsError(true);
+            setSlots([]);
+          }
+          setSlot("");
+          setStep(2);
+        }
+        return;
       }
-      return;
+      setDone(data);
+    } catch {
+      // Network failure or timeout — the request may or may not have gone
+      // through server-side. It's safe to say "try again": requestId makes a
+      // resubmit idempotent, so a retry can't create a second booking even
+      // if this attempt actually succeeded.
+      setError("We couldn't reach the booking system just now. Please check your connection and try again — it's safe to resubmit, you won't be double-booked.");
+    } finally {
+      setSubmitting(false);
     }
-    setDone(data);
   }
 
   if (done) {
@@ -213,6 +253,10 @@ export default function BookingWizard({ services, initialService, whatsapp }: { 
                     </button>
                   ))}
                 </div>
+              ) : slotsError ? (
+                <p className="rounded-2xl bg-red-50 px-4 py-4 text-sm text-red-700" role="alert">
+                  We couldn&rsquo;t check availability just now — this looks like a temporary system issue, not a fully booked day. Please try again in a moment, or WhatsApp us to book directly.
+                </p>
               ) : (
                 <p className="rounded-2xl bg-lilac-50 px-4 py-4 text-sm">
                   No open slots on this day — we may be closed or fully booked. Try another date, or WhatsApp us and we&rsquo;ll find a gap.

@@ -21,6 +21,7 @@ export default async function ContactPage() {
             <a href={`https://wa.me/${s.whatsapp_number}`} target="_blank" rel="noopener noreferrer" className="btn-whatsapp w-full">Chat on WhatsApp</a>
           </div>
           <div className="card overflow-hidden">
+            {/* TODO: swap for the exact street address embed once confirmed by the business owner. */}
             <iframe
               title="Map — Durbanville, Cape Town"
               src="https://www.google.com/maps?q=Durbanville,+Cape+Town,+Western+Cape&output=embed"
@@ -28,7 +29,6 @@ export default async function ContactPage() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-            <p className="px-6 py-3 text-xs text-inkgrey/60">Replace with your exact street address embed once confirmed.</p>
           </div>
         </div>
         <div>
