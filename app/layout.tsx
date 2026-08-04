@@ -7,9 +7,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Misty's Pawfect Touch — Premium Dog Parlour in Durbanville, Cape Town",
+  title: "Misty's Pawfect Touch — Boutique Dog Parlour in Durbanville, Cape Town",
   description:
-    "Premium grooming, gentle care, and a pawfect touch for every dog. Boutique dog parlour in Durbanville offering grooming, behaviour and nutrition support.",
+    "Warm grooming, gentle care, and a pawfect touch for every dog. Boutique dog parlour in Durbanville offering grooming, behaviour and nutrition support.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

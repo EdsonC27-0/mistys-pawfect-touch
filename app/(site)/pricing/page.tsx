@@ -74,7 +74,7 @@ export default async function PricingPage() {
               <p className="mt-1 text-xs text-inkgrey/60">{svc.service_prices?.[0]?.label}</p>
             </div>
           ))}
-          <div className="card bg-gradient-to-br from-plum to-plum-mid p-6 text-white sm:col-span-2 lg:col-span-4">
+          <div className="card panel-gradient p-6 text-white sm:col-span-2 lg:col-span-4">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg text-white">Pensioner discount — {String(settings.pensioner_discount_percent)}% off grooming</h3>

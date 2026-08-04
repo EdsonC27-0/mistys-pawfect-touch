@@ -4,24 +4,23 @@ import Section from "@/components/Section";
 import Placeholder from "@/components/Placeholder";
 import BotanicalOrnament from "@/components/BotanicalOrnament";
 import { PawIcon } from "@/components/Logo";
-import { getInstagramTiles, getPublicSettings, getServices, getReviews } from "@/lib/data";
+import { getInstagramTiles, getPublicSettings, getServices } from "@/lib/data";
 import { zar } from "@/lib/format";
 
 export const revalidate = 60;
 
 const benefits = [
   { title: "Gentle handling", text: "Calm, reward-based handling that puts your dog's comfort before the clock — nervous dogs are our speciality." },
-  { title: "Premium grooming", text: "Boutique products, breed-aware styling and a finish you'll want to photograph." },
+  { title: "Boutique-quality grooming", text: "Boutique products, breed-aware styling and a finish you'll want to photograph." },
   { title: "All breeds welcome", text: "From teacup to Boerboel — every coat, every temperament, every glorious mix." },
   { title: "Pensioner discounts", text: "A standing discount and extra help at drop-off, because care should be within reach." },
   { title: "Behaviour & nutrition support", text: "Practical, kind guidance that goes beyond the grooming table." },
 ];
 
 export default async function HomePage() {
-  const [settings, services, reviews, tiles] = await Promise.all([
+  const [settings, services, tiles] = await Promise.all([
     getPublicSettings(),
     getServices(),
-    getReviews(3),
     getInstagramTiles(6),
   ]);
   const featured = services.filter((s: any) => !s.is_addon).slice(0, 6);
@@ -38,11 +37,11 @@ export default async function HomePage() {
               <PawIcon className="h-3.5 w-3.5 text-gold" /> Boutique dog parlour · Durbanville
             </p>
             <h1 className="mt-4 text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
-              Premium grooming, gentle care, and a <em className="not-italic text-plum-mid">pawfect touch</em> for every dog.
+              Warm grooming, gentle care, and a <em className="not-italic text-plum-mid">pawfect touch</em> for every dog.
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-relaxed">
               At Misty&rsquo;s Pawfect Touch, every dog is groomed at their own pace, in a calm space,
-              by people who genuinely adore them. Premium care — never rushed, always kind.
+              by people who genuinely adore them. Never rushed, always kind.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/book" className="btn-primary">Book an appointment</Link>
@@ -79,7 +78,7 @@ export default async function HomePage() {
         tint
         eyebrow="Why dogs love it here"
         title="A parlour that feels like a second home"
-        intro="We're a small, warm team with a simple promise: your dog will be handled gently, groomed beautifully, and returned to you happier than they arrived."
+        intro="We're a small, warm team with a simple promise: your dog will be handled gently and groomed beautifully."
       >
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map((b) => (
@@ -89,7 +88,7 @@ export default async function HomePage() {
               <p className="mt-2 text-sm leading-relaxed">{b.text}</p>
             </div>
           ))}
-          <div className="card flex flex-col justify-between bg-gradient-to-br from-plum to-plum-mid p-7 text-white">
+          <div className="card panel-gradient flex flex-col justify-between p-7 text-white">
             <h3 className="text-lg text-white">Ready for a pamper?</h3>
             <p className="mt-2 text-sm text-white/85">Pick a service and a live time slot — it takes under two minutes.</p>
             <Link href="/book" className="btn mt-6 bg-white text-plum hover:bg-lilac-50">Book now</Link>
@@ -121,24 +120,6 @@ export default async function HomePage() {
         </div>
         <div className="mt-10 text-center">
           <Link href="/services" className="btn-ghost">See all services</Link>
-        </div>
-      </Section>
-
-      {/* Reviews */}
-      <Section tint eyebrow="Wagging endorsements" title="What our humans say">
-        <div className="grid gap-6 lg:grid-cols-3">
-          {reviews.map((r) => (
-            <figure key={r.id} className="card p-7">
-              <div className="text-gold" aria-label={`${r.rating} out of 5 stars`}>{"★".repeat(r.rating)}</div>
-              <blockquote className="mt-3 text-sm leading-relaxed">&ldquo;{r.content}&rdquo;</blockquote>
-              <figcaption className="mt-4 text-sm font-semibold text-plum">
-                {r.author_name}{r.dog_name && <span className="font-normal text-inkgrey/70"> · {r.dog_name}&rsquo;s human</span>}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <div className="mt-10 text-center">
-          <Link href="/reviews" className="btn-ghost">Read more reviews</Link>
         </div>
       </Section>
 

@@ -10,7 +10,7 @@ export default function Footer({ settings }: { settings: Record<string, any> }) 
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm leading-relaxed">
-            Premium grooming, gentle care, and a pawfect touch for every dog in Durbanville, Cape Town.
+            Warm grooming, gentle care, and a pawfect touch for every dog in Durbanville, Cape Town.
           </p>
         </div>
         <div>

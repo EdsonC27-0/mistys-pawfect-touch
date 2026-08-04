@@ -10,7 +10,7 @@ export default function AboutPage() {
     <>
       <section className="container-px py-16 sm:py-20">
         <p className="eyebrow flex items-center gap-2"><PawIcon className="h-3.5 w-3.5 text-gold" /> About us</p>
-        <h1 className="mt-4 max-w-3xl text-4xl sm:text-5xl">A warm, premium parlour built on trust</h1>
+        <h1 className="mt-4 max-w-3xl text-4xl sm:text-5xl">A warm, welcoming parlour built on trust</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed">
           Misty&rsquo;s Pawfect Touch is a boutique dog parlour in Durbanville, Cape Town, devoted to
           grooming, comfort and canine wellness. We believe a groom should feel like care, not a chore —
