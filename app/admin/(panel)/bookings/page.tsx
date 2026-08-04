@@ -41,11 +41,21 @@ export default function BookingsAdmin() {
   }
 
   async function recordPayment(b: any, status: string) {
-    await sb.from("payments").insert({
-      booking_id: b.id, provider: b.payment_provider || "manual_eft", status,
-      amount: b.amount ?? 0, link: b.payment_link ?? "", note: `Marked ${status} by admin`,
-    });
-    await update(b.id, { payment_status: status }, `Payment marked ${status}.`);
+    setBusy(true); setMsg("");
+    const { error } = await sb.rpc("record_payment", { p_booking_id: b.id, p_status: status });
+    setBusy(false);
+    setMsg(error ? `Error: ${error.message}` : `Payment marked ${status}.`);
+    if (!error) load();
+  }
+
+  function isValidPaymentLink(url: string) {
+    if (!url) return true; // clearing the field is fine
+    try {
+      const u = new URL(url);
+      return u.protocol === "https:";
+    } catch {
+      return false;
+    }
   }
 
   function confirmationText(b: any) {
@@ -154,14 +164,22 @@ export default function BookingsAdmin() {
                 </select>
                 <input className="input" type="number" step="0.01" placeholder="Amount" defaultValue={sel.amount ?? ""} onBlur={(e) => e.target.value !== String(sel.amount ?? "") && update(sel.id, { amount: e.target.value ? Number(e.target.value) : null }, "Amount saved.")} aria-label="Amount" />
               </div>
-              <input className="input" placeholder="Paste payment link (PayFast, Yoco, Ozow…)" defaultValue={sel.payment_link}
-                onBlur={(e) => e.target.value !== sel.payment_link && update(sel.id, { payment_link: e.target.value }, "Payment link saved.")} aria-label="Payment link" />
+              <input className="input" placeholder="Paste payment link (PayFast, Yoco, Ozow…) — must be a valid https:// URL" defaultValue={sel.payment_link}
+                onBlur={(e) => {
+                  if (e.target.value === sel.payment_link) return;
+                  if (!isValidPaymentLink(e.target.value)) {
+                    setMsg("Error: payment link must be a valid https:// URL.");
+                    e.target.value = sel.payment_link;
+                    return;
+                  }
+                  update(sel.id, { payment_link: e.target.value }, "Payment link saved.");
+                }} aria-label="Payment link" />
               <div className="flex flex-wrap gap-2">
                 <button className="btn-ghost !px-3.5 !py-2 text-xs" disabled={busy || !sel.payment_link} onClick={() => recordPayment(sel, "link_sent")}>Mark link sent</button>
                 <button className="btn-primary !px-3.5 !py-2 text-xs" disabled={busy} onClick={() => recordPayment(sel, "paid")}>Mark paid</button>
                 {PAY_STATUSES.filter((s) => !["paid", "link_sent"].includes(s)).map((s) => (
                   <button key={s} className="rounded-full bg-lilac-100 px-3.5 py-2 text-xs font-semibold capitalize text-plum hover:bg-lilac-200" disabled={busy}
-                    onClick={() => update(sel.id, { payment_status: s }, `Payment ${s}.`)}>{s.replace("_", " ")}</button>
+                    onClick={() => recordPayment(sel, s)}>{s.replace("_", " ")}</button>
                 ))}
               </div>
             </div>

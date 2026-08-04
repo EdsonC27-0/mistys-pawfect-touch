@@ -6,10 +6,28 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mistys-pawfect-touch.vercel.app";
+const TITLE = "Misty's Pawfect Touch — Boutique Dog Parlour in Durbanville, Cape Town";
+const DESCRIPTION =
+  "Warm grooming, gentle care, and a pawfect touch for every dog. Boutique dog parlour in Durbanville offering grooming, behaviour and nutrition support.";
+
 export const metadata: Metadata = {
-  title: "Misty's Pawfect Touch — Boutique Dog Parlour in Durbanville, Cape Town",
-  description:
-    "Warm grooming, gentle care, and a pawfect touch for every dog. Boutique dog parlour in Durbanville offering grooming, behaviour and nutrition support.",
+  metadataBase: new URL(BASE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: BASE_URL,
+    siteName: "Misty's Pawfect Touch",
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
